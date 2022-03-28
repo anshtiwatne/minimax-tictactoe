@@ -79,7 +79,7 @@ def main():
         
         global MAX, MIN
 
-        choice = input("\nChoose between 'X' or 'O': ").strip().upper()
+        choice = input("\nChoose between 'X' and 'O': ").strip().upper()
         while choice not in {"X", "O"}:
             choice = input("Invalid choice, choose again: ").strip().upper()
         MIN = choice
@@ -88,9 +88,17 @@ def main():
     def get_move():
         """Get user's move"""
 
-        move = int(input("Enter your move: "))-1
-        while grid.get(move) != " ":
-            move = int(input("Invalid move try again: "))-1
+        move = input("\nEnter your move: ").strip()
+        i = 0
+        while i != 2:
+            i = 0
+            if move.isnumeric():
+                move = int(move)-1
+                i += 1
+            if grid.get(move, None) == " ":
+                i += 1
+            else:
+                move = input("Invalid move, try again: ")
 
         return move
 
