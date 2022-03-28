@@ -72,21 +72,33 @@ def minimax(depth: int, maximizing: bool=True):
     return best_score
 
 
-def check_game_over():
-    res = result()
-    if res is not None:
-        if res == -1: print(f"{MIN} wins!")
-        elif res == +1: print(f"{MAX} wins!")
-        elif res == 0: print("Game tied!")
-        raise SystemExit from None
-
-
 def main():
     """Alternate between AI and user moves"""
 
-    while True:
+    def get_chioce():
+        """Get user's choice"""
 
-        # minimax
+        global MAX
+        global MIN
+
+        choice = input("\nChoose between 'X' or 'O': ").strip().upper()
+        while choice not in {MAX, MIN}:
+            choice = input("Invalid choice, choose again: ").strip().upper()
+        MIN = choice
+        MAX = "O" if MIN == "X" else "X"
+
+    def get_move():
+        """Get user's move"""
+
+        move = int(input("Enter your move: "))-1
+        while grid.get(move) != " ":
+            move = int(input("Invalid move try again: "))-1
+
+        return move
+
+    def ai_move():
+        """AI's move"""
+
         best_score = float("-inf")
         best_move = 0
         for i, spot in grid.items():
@@ -95,16 +107,32 @@ def main():
             score = minimax(0, maximizing=False)
             grid[i] = " "
             if score > best_score: best_score, best_move = score, i
-        grid[best_move] = MAX
-        draw_grid()
-        check_game_over()
 
-        # player
-        move = int(input("Enter your move: "))-1
-        while grid.get(move) != " ":
-            move = int(input("Invalid move try again: "))-1
-        grid[move] = MIN
-        check_game_over()
+        return best_move
+
+    get_chioce()
+    while True: # game loop
+        print(end=None)
+
+        if MAX == "X": # AI first
+            if result() is not None: break
+            grid[ai_move()] = MAX
+            draw_grid()
+            if result() is not None: break
+            grid[get_move()] = MIN
+
+        if MIN == "X": # User first
+            draw_grid()
+            if result() is not None: break
+            grid[get_move()] = MAX
+            if result() is not None: break
+            grid[ai_move()] = MIN
+
+
+    if result() == -1: print(f"{MIN} wins!\n")
+    elif result() == +1: print(f"{MAX} wins!\n")
+    elif result() == 0: print("Game tied!\n")
+    raise SystemExit from None
 
 
 if __name__ == "__main__":
