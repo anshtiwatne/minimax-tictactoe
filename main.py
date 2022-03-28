@@ -1,10 +1,9 @@
 """
 Tic-tac-toe solver using minimax algorithm
 """
-# pylint: disable=multiple-statements
 
-MAX = "X"
-MIN = "O"
+MAX: str # X or O
+MIN: str # X or O
 
 # Empty board
 grid = {
@@ -77,12 +76,11 @@ def main():
 
     def get_chioce():
         """Get user's choice"""
-
-        global MAX
-        global MIN
+        
+        global MAX, MIN
 
         choice = input("\nChoose between 'X' or 'O': ").strip().upper()
-        while choice not in {MAX, MIN}:
+        while choice not in {"X", "O"}:
             choice = input("Invalid choice, choose again: ").strip().upper()
         MIN = choice
         MAX = "O" if MIN == "X" else "X"
@@ -124,9 +122,9 @@ def main():
         if MIN == "X": # User first
             draw_grid()
             if result() is not None: break
-            grid[get_move()] = MAX
+            grid[get_move()] = MIN
             if result() is not None: break
-            grid[ai_move()] = MIN
+            grid[ai_move()] = MAX
 
 
     if result() == -1: print(f"{MIN} wins!\n")
