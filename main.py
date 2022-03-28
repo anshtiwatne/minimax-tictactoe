@@ -15,13 +15,16 @@ grid = {
 def draw_grid():
     """Draw's the Tic-tac-toe grid"""
 
+    print(end=None)
+
     for i, spot in grid.items():
         if (i + 1) % 3 == 0 and grid.get(i + 3):
             print(spot, end=f"\n{'-'*9}\n")
         elif (i - 1) % 3 == 0:
             print(f" | {spot} | ", end="")
-        else:
+        elif i % 3 == 0:
             print(spot, end="")
+
     print(end=None)
 
 
@@ -46,7 +49,7 @@ def result():
         return 0
 
 
-def minimax(depth: int, maximizing: bool=True):
+def minimax(depth: int, maximizing: bool):
     """Minimax algorithm with alpha-beta pruning"""
 
     if result() is not None:
@@ -117,8 +120,9 @@ def main():
         return best_move
 
     get_chioce()
+    print(f"\n1 | 2 | 3\n{'-'*9}\n4 | 5 | 6\n{'-'*9}\n7 | 8 | 9")
+
     while True: # game loop
-        print(end=None)
 
         if MAX == "X": # AI first
             if result() is not None: break
@@ -128,11 +132,11 @@ def main():
             grid[get_move()] = MIN
 
         if MIN == "X": # User first
-            draw_grid()
             if result() is not None: break
             grid[get_move()] = MIN
             if result() is not None: break
             grid[ai_move()] = MAX
+            draw_grid()
 
 
     if result() == -1: print(f"{MIN} wins!\n")
