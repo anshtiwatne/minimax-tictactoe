@@ -22,7 +22,7 @@ def draw_grid():
             print(spot, end=f"\n{'-'*9}\n")
         elif (i - 1) % 3 == 0:
             print(f" | {spot} | ", end="")
-        elif i % 3 == 0:
+        else:
             print(spot, end="")
 
     print(end=None)
