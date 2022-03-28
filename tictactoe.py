@@ -1,3 +1,8 @@
+"""
+Tic-tac-toe solver using minimax algorithm
+"""
+# pylint: disable=multiple-statements
+
 MAX = "X"
 MIN = "O"
 
@@ -8,8 +13,8 @@ grid = {
     6: ' ', 7: ' ', 8: ' '}
 
 
-def draw():
-    """Draw's the Tic-tac-toe board"""
+def draw_grid():
+    """Draw's the Tic-tac-toe grid"""
 
     for i, spot in grid.items():
         if (i + 1) % 3 == 0 and grid.get(i + 3):
@@ -38,66 +43,70 @@ def result():
         if win.issubset(positions[MAX]): return +1
         elif win.issubset(positions[MIN]): return -1
 
-    if " " not in grid.values(): return 0
-    else: return None
+    if " " not in grid.values():
+        return 0
 
 
-def minimax(depth: int, maximizing: bool):
+def minimax(depth: int, maximizing: bool=True):
     """Minimax algorithm with alpha-beta pruning"""
 
-    if result() != None:
+    if result() is not None:
         return result()
 
-    if maximizing:
-        best_score = float("-inf")
-        for i in grid:
-            if grid[i] == " ":
-                grid[i] = MAX
-                score = minimax(depth+1, False)
-                grid[i] = " "
-                if score > best_score: best_score = score
-        return best_score
+    best_score = float("-inf") if maximizing else float("inf")
+    for i, spot in grid.items():
+        if spot != " ": continue
 
-    if not maximizing:
-        best_score = float("inf")
-        for i in grid:
-            if grid[i] == " ":
-                grid[i] = MIN
-                score = minimax(depth+1, True)
-                grid[i] = " "
-                if score < best_score: best_score = score
-        return best_score
+        if maximizing:
+            grid[i] = MAX
+            score = minimax(depth+1, False)
+            grid[i] = " "
+            if score > best_score: best_score = score
+
+        if not maximizing:
+            grid[i] = MIN
+            score = minimax(depth+1, True)
+            grid[i] = " "
+            if score < best_score: best_score = score
+
+    return best_score
 
 
-def play():
+def check_game_over():
+    res = result()
+    if res is not None:
+        if res == -1: print(f"{MIN} wins!")
+        elif res == +1: print(f"{MAX} wins!")
+        elif res == 0: print("Game tied!")
+        raise SystemExit from None
+
+
+def main():
     """Alternate between AI and user moves"""
 
     while True:
 
         # minimax
-        draw()
         best_score = float("-inf")
         best_move = 0
-        for i in grid:
-            if grid[i] == " ":
-                grid[i] = MAX
-                score = minimax(0, False)
-                grid[i] = " "
-                if score > best_score:
-                    best_score = score
-                    best_move = i
+        for i, spot in grid.items():
+            if spot != " ": continue
+            grid[i] = MAX
+            score = minimax(0, maximizing=False)
+            grid[i] = " "
+            if score > best_score: best_score, best_move = score, i
         grid[best_move] = MAX
+        check_game_over()
+
+        draw_grid()
 
         # player
-        draw()
-        move = int(input("Enter the position for 'O':  "))-1
-        print(grid[move])
-        while grid[move] != " ":
+        move = int(input("Enter your move: "))-1
+        while grid.get(move) != " ":
             move = int(input("Invalid move try again: "))-1
         grid[move] = MIN
+        check_game_over()
 
-        if result() != None:
-            print(result())
-            break
 
-play()
+if __name__ == "__main__":
+    main()
