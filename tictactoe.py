@@ -96,9 +96,8 @@ def main():
             grid[i] = " "
             if score > best_score: best_score, best_move = score, i
         grid[best_move] = MAX
-        check_game_over()
-
         draw_grid()
+        check_game_over()
 
         # player
         move = int(input("Enter your move: "))-1
